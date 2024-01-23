@@ -89,6 +89,8 @@ def optimizing_graph_matrix_neighbor(graph_matrix, index_clientid, model_differe
         #           [G @ x <= h,
         #            A @ x == b]
         #           )
+
+
         prob.solve()
 
         graph_matrix[index_clientid[i], index_clientid] = torch.Tensor(x.value)

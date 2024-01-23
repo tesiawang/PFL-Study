@@ -12,7 +12,7 @@ def get_args():
     parser.add_argument('--lr', type=float, default=0.01, help='learning rate (default: 0.1)')
     parser.add_argument('--epochs', type=int, default=10, help='number of local epochs')
     parser.add_argument('--n_parties', type=int, default=10, help='number of workers in a distributed cluster')
-    parser.add_argument('--comm_round', type=int, default=50, help='number of maximum communication roun')
+    parser.add_argument('--comm_round', type=int, default=30, help='number of maximum communication round')
     parser.add_argument('--init_seed', type=int, default=10, help="Random seed")
     parser.add_argument('--dropout_p', type=float, required=False, default=0.0, help="Dropout probability. Default=0.0")
     parser.add_argument('--datadir', type=str, required=False, default="./data/", help="Data directory")
@@ -37,6 +37,7 @@ def get_args():
     # compare with some variants
     parser.add_argument('--weighted_initial', type=int, default=0)
     parser.add_argument('--consider_data_quantity', type=int, default=0)
+    parser.add_argument('--new_objective', type=int, default=2)
     
     args = parser.parse_args()
     cfg = dict()
@@ -55,6 +56,7 @@ def get_args():
     cfg['self_wight'] = 'loss'
     cfg['weighted_initial'] = args.weighted_initial
     cfg['consider_data_quantity'] = args.consider_data_quantity
+    cfg['new_objective'] = args.new_objective
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
 
 

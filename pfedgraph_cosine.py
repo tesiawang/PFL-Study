@@ -55,10 +55,6 @@ def local_train_pfedgraph(args, round, nets_this_round, cluster_models, train_lo
         net.train()
         iterator = iter(train_local_dl)
 
-        loss = torch.tensor(0)
-        loss2 = torch.tensor(0)
-        loss, loss2 = loss.cuda(), loss2.cuda()
-
         for iteration in range(args.num_local_iterations):
             try:
                 x, target = next(iterator)
@@ -85,8 +81,10 @@ def local_train_pfedgraph(args, round, nets_this_round, cluster_models, train_lo
             loss.backward()
             optimizer.step()
 
-        # after local iterations, record the final local loss
-        local_losses[net_id] = loss + loss2
+            # record the final local loss over the local dataset
+            if iteration == args.num_local_iterations - 1:
+                local_losses[net_id] = loss.item()
+
 
         if net_id in benign_client_list:
             val_acc = compute_acc(net, val_local_dls[net_id])
@@ -103,6 +101,10 @@ def local_train_pfedgraph(args, round, nets_this_round, cluster_models, train_lo
 
         net.to('cpu')
         # cluster_model.to('cpu')
+
+    print("Check local losses:")
+    print(local_losses)
+
     return np.array(best_test_acc_list)[np.array(benign_client_list)].mean(), \
            np.array(generalized_test_acc_list)[np.array(benign_client_list)].mean()
 
@@ -188,7 +190,7 @@ for round in range(cfg["comm_round"]):
     recorder['mean_personalized_acc'].append(mean_personalized_acc)
     recorder['mean_generalized_acc'].append(mean_generalized_acc)
 
-with open('recorder_cfg%d%d.pkl' % (cfg['weighted_initial'], cfg['consider_data_quantity']), 'wb') as f:
+with open('recorder_new_obj%d.pkl' % cfg['new_objective'], 'wb') as f:
     pickle.dump(recorder, f)
 
 

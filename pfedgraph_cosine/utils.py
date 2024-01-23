@@ -77,8 +77,11 @@ def optimizing_graph_matrix_neighbor(cfg, graph_matrix, index_clientid, model_di
     A = np.ones((1, n))
     b = np.ones(1)
     for i in range(model_difference_matrix.shape[0]):
-        model_difference_vector = model_difference_matrix[i]
+        model_difference_vector = model_difference_matrix[i] # model_difference_matrix: all negative values
         d = model_difference_vector.numpy()
+        # print("check model_difference_vector")
+        # print(d)
+
         q = d - 2 * lamba * p
         x = cp.Variable(n)
 
@@ -93,19 +96,35 @@ def optimizing_graph_matrix_neighbor(cfg, graph_matrix, index_clientid, model_di
         #                A @ x == b]
         #               )
 
-        if cfg["new_objective"] == 1:
-            # TODO: add the new objective function for each client
-            local_losses
-            prob = cp.Problem(cp.Minimize(d.T @ x),
+        if cfg["new_objective"] == 0:
+            prob = cp.Problem(cp.Minimize(cp.quad_form(x, P) + q.T @ x),
+                      [G @ x <= h,
+                       A @ x == b]
+                      )
+        elif cfg["new_objective"] == 1:
+            prob = cp.Problem(cp.Minimize(q.T @ x),  # omit the second-order term
+                      [G @ x <= h,
+                       A @ x == b]
+                      )
+        elif cfg["new_objective"] == 2:
+            induced_bias = cp.sum(x) * p[i] * local_losses[i] * lamba
+            prob = cp.Problem(cp.Minimize( induced_bias + d.T @ x),
+                      [G @ x <= h,
+                       A @ x == b]
+                      )
+        elif cfg["new_objective"] == 3:
+            gen_error = cp.sum((x**2)*(1/p)) * lamba
+            prob = cp.Problem(cp.Minimize( gen_error + d.T @ x),
                       [G @ x <= h,
                        A @ x == b]
                       )
         else:
-            raise ValueError("must consider the new objective function")
+            raise ValueError("consider the new objective function")
 
         prob.solve()
 
         graph_matrix[index_clientid[i], index_clientid] = torch.Tensor(x.value)
+
     return graph_matrix
   
 def weight_flatten(model):
