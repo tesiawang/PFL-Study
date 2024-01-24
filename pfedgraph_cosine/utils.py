@@ -101,25 +101,34 @@ def optimizing_graph_matrix_neighbor(cfg, graph_matrix, index_clientid, model_di
                       [G @ x <= h,
                        A @ x == b]
                       )
-        elif cfg["new_objective"] == 1:
-            prob = cp.Problem(cp.Minimize(q.T @ x),  # omit the second-order term
-                      [G @ x <= h,
-                       A @ x == b]
-                      )
-        elif cfg["new_objective"] == 2:
-            induced_bias = cp.sum(x) * p[i] * local_losses[i] * lamba
-            prob = cp.Problem(cp.Minimize( induced_bias + d.T @ x),
-                      [G @ x <= h,
-                       A @ x == b]
-                      )
+
+        # elif cfg["new_objective"] == 1:
+        #     prob = cp.Problem(cp.Minimize(q.T @ x),  # omit the second-order term
+        #               [G @ x <= h,
+        #                A @ x == b]
+        #               )
+        # elif cfg["new_objective"] == 2:
+        #     induced_bias = cp.sum(x) * p[i] * local_losses[i] * lamba
+        #     prob = cp.Problem(cp.Minimize( induced_bias + d.T @ x),
+        #               [G @ x <= h,
+        #                A @ x == b]
+        #               )
+
         elif cfg["new_objective"] == 3:
-            gen_error = cp.sum((x**2)*(1/p)) * lamba
+            gen_error = cp.power(x,2).T @ (1/p) * lamba
             prob = cp.Problem(cp.Minimize( gen_error + d.T @ x),
                       [G @ x <= h,
                        A @ x == b]
                       )
+
+        elif cfg["new_objective"] == 4:
+            gen_error = cp.power(x,2).T @ (1 / p) * lamba
+            prob = cp.Problem(cp.Minimize(cp.power(gen_error,0.5) + d.T @ x),
+                              [G @ x <= h,
+                               A @ x == b]
+                              )
         else:
-            raise ValueError("consider the new objective function")
+            raise ValueError("consider a valid objective function")
 
         prob.solve()
 

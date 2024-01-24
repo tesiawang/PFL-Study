@@ -190,7 +190,7 @@ for round in range(cfg["comm_round"]):
     recorder['mean_personalized_acc'].append(mean_personalized_acc)
     recorder['mean_generalized_acc'].append(mean_generalized_acc)
 
-with open('recorder_new_obj%d.pkl' % cfg['new_objective'], 'wb') as f:
+with open('recorder_weighted_new_obj%d.pkl' % cfg['new_objective'], 'wb') as f:
     pickle.dump(recorder, f)
 
 
