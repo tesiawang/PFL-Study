@@ -23,6 +23,8 @@ with open('recorder_weighted_new_obj3.pkl', 'rb') as f:
     mean_per_acc3 = recorder['mean_personalized_acc']
     mean_gen_acc3 = recorder['mean_generalized_acc']
 
+print(mean_per_acc3[65:69])
+print(mean_per_acc0[55:59])
 # with open('recorder_weighted_new_obj2.pkl', 'rb') as f:
 #     recorder = pickle.load(f)
 #     mean_per_acc = recorder['mean_personalized_acc']
@@ -50,4 +52,15 @@ plt.plot(mean_gen_acc3, label='Generalized Accuracy (new error bound)')
 plt.legend()
 plt.xlabel('Communication Round')
 plt.ylabel('Generalized Accuracy')
+
+
+# Generate a range of x values
+x = np.linspace(0, 10, 400)
+
+# Compute the corresponding y values
+y = np.sqrt(x)
+
+# Create the plot
+plt.figure(3)
+plt.plot(x, y)
 plt.show()

@@ -5,7 +5,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu', type=str, default="0")
     parser.add_argument('--model', type=str, default='simplecnn', help='neural network used in training')
-    parser.add_argument('--dataset', type=str, default='cifar10', help='dataset used for training')
+    parser.add_argument('--dataset', type=str, default='cifar100', help='dataset used for training')
     parser.add_argument('--partition', type=str, default='noniid', help='the data partitioning strategy')
     parser.add_argument('--num_local_iterations', type=int, default=1, help='number of local iterations')
     parser.add_argument('--batch_size', type=int, default=64, help='input batch size for training (default: 64)')

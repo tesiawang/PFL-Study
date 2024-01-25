@@ -33,6 +33,6 @@
 
 
 python pfedgraph_cosine.py --weighted_initial 1 --new_objective 4 --num_local_iterations 400 --comm_round 70
-python pfedgraph_cosine.py --weighted_initial 1 --new_objective 3 --num_local_iterations 400 --comm_round 70
-python pfedgraph_cosine.py --weighted_initial 1 --new_objective 0 --num_local_iterations 400 --comm_round 70
+python pfedgraph_cosine.py --weighted_initial 1 --new_objective 3 --num_local_iterations 400 --comm_round 60
+python pfedgraph_cosine.py --weighted_initial 1 --new_objective 0 --num_local_iterations 400 --comm_round 60
 
