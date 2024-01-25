@@ -33,6 +33,9 @@
 
 
 python pfedgraph_cosine.py --weighted_initial 1 --new_objective 4 --num_local_iterations 400 --comm_round 70
-python pfedgraph_cosine.py --weighted_initial 1 --new_objective 3 --num_local_iterations 400 --comm_round 60
-python pfedgraph_cosine.py --weighted_initial 1 --new_objective 0 --num_local_iterations 400 --comm_round 60
+#python pfedgraph_cosine.py --weighted_initial 1 --new_objective 3 --num_local_iterations 400 --comm_round 60
+#python pfedgraph_cosine.py --weighted_initial 1 --new_objective 0 --num_local_iterations 400 --comm_round 60
 
+### RESULTS:
+# using the new gen bound can reach the same or better performance than the original approx term
+# whether to take square root of the gen bound does not matter

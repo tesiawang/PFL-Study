@@ -121,17 +121,16 @@ def optimizing_graph_matrix_neighbor(cfg, graph_matrix, index_clientid, model_di
                        A @ x == b]
                       )
 
-        ## this square root objective function is not convex
-        # elif cfg["new_objective"] == 4:
-        #     gen_error = cp.power(x,2).T @ (1 / p) * lamba
-        #     prob = cp.Problem(cp.Minimize(cp.power(gen_error,0.5) + d.T @ x),
-        #                       [G @ x <= h,
-        #                        A @ x == b]
-        #                       )
+        elif cfg["new_objective"] == 4:
+            x_prime = cp.multiply(x, 1 / p)  # element-wise multiplication
+            prob = cp.Problem(cp.Minimize(cp.norm(x_prime, 2) + d.T @ x),
+                              [G @ x <= h,
+                               A @ x == b]
+                              )
         else:
             raise ValueError("consider a valid objective function")
 
-        prob.solve()
+        prob.solve(solver = cp.ECOS)
 
         graph_matrix[index_clientid[i], index_clientid] = torch.Tensor(x.value)
 
