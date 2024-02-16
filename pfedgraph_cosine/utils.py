@@ -36,7 +36,7 @@ def cal_model_cosine_difference(nets_this_round, initial_global_parameters, dw, 
     for i in range(len(nets_this_round)):
         model_i = nets_this_round[index_clientid[i]].state_dict()
         for key in dw[index_clientid[i]]:
-            dw[index_clientid[i]][key] =  model_i[key] - initial_global_parameters[key]
+            dw[index_clientid[i]][key] =  model_i[key] - initial_global_parameters[key] # TODO: why we need this dw? why not directly use model_i??
     for i in range(len(nets_this_round)):
         for j in range(i, len(nets_this_round)):
             if similarity_matric == "all":
@@ -151,7 +151,7 @@ def weight_flatten_all(model):
     params = torch.cat(params)
     return params
 
-def aggregation_by_graph(cfg, graph_matrix, nets_this_round, global_w):
+def aggregation_by_graph(cfg, graph_matrix, nets_this_round, global_w): # use global_w as the reference model???
     tmp_client_state_dict = {}
     cluster_model_vectors = {}
     for client_id in nets_this_round.keys():
@@ -171,11 +171,12 @@ def aggregation_by_graph(cfg, graph_matrix, nets_this_round, global_w):
         for neighbor_id in nets_this_round.keys():
             net_para = nets_this_round[neighbor_id].state_dict()
             for key in tmp_client_state:
-                tmp_client_state[key] += net_para[key] * aggregation_weight_vector[neighbor_id]
+                tmp_client_state[key] += net_para[key] * aggregation_weight_vector[neighbor_id] # need to use tmp_client_state to update the local model; need layer-wise structure
 
         for neighbor_id in nets_this_round.keys():
             net_para = weight_flatten_all(nets_this_round[neighbor_id].state_dict())
-            cluster_model_state += net_para * (aggregation_weight_vector[neighbor_id] / torch.linalg.norm(net_para))
+            # normalize each neighbor mode para when aggregation!!!
+            cluster_model_state += net_para * (aggregation_weight_vector[neighbor_id] / torch.linalg.norm(net_para)) # just use this to compute the cosine similarity; use flatten models
 
     if cfg['weighted_initial'] == 1:
         for client_id in nets_this_round.keys():

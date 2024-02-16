@@ -27,6 +27,7 @@ def get_args():
     parser.add_argument('--weight_norm', type=str, default='relu', choices=['sum', 'softmax', 'abs', 'relu', 'sigmoid'], help='How to measure the modle difference')
     parser.add_argument('--difference_measure', type=str, default='all', help='How to measure the model difference')
     
+    # important!!！
     parser.add_argument('--alpha', type=float, default=0.8, help='Hyper-parameter to avoid concentration')
     parser.add_argument('--lam', type=float, default=0.01, help="Hyper-parameter in the objective")
 
